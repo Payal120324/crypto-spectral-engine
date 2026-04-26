@@ -22,7 +22,7 @@ def backtest_strategy(price, regimes, cost=0.0005):
 
     regimes = regimes[-len(returns):]
 
-    # 🔥 FAST SIGNAL (RSI)
+    
     rsi = compute_rsi(price)
 
     position = 0
@@ -45,19 +45,19 @@ def backtest_strategy(price, regimes, cost=0.0005):
         # regime change
         if regimes[i] != regimes[i-1]:
 
-            # ✅ BUY (oversold + volatile)
+           
             if regimes[i] == 1 and rsi[i] < 40 and position == 0:
                 position = 1
                 trades.append(("BUY", i))
                 last_trade = i
 
-            # ✅ SELL (overbought or exit regime)
+           
             elif position == 1 and (rsi[i] > 60 or regimes[i] == 0):
                 position = 0
                 trades.append(("SELL", i))
                 last_trade = i
 
-        # update equity
+        
         if position == 1:
             equity.append(equity[-1] * (1 + returns[i] - cost))
         else:
