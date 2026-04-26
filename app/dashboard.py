@@ -12,30 +12,20 @@ from src.analysis.strategy import backtest_strategy
 
 st.set_page_config(layout="wide")
 
-# ------------------------
-# LOAD DATA
-# ------------------------
 df = load_data("data/btc.csv")
 df = smooth_price(df)
 
 price = df['Close'].reset_index(drop=True)
 signal = df['Close'].pct_change().dropna().values
 
-# ------------------------
-# DETECT REGIME
-# ------------------------
+
 vol, regimes = detect_regimes(signal)
 
-# ------------------------
-# STRATEGY
-# ------------------------
+
 equity, trades, total_return = backtest_strategy(price, regimes)
 
 buy_hold_return = (price.iloc[-1] / price.iloc[0] - 1) * 100
 
-# ------------------------
-# HEADER
-# ------------------------
 st.title("🚀 Crypto Spectral Risk Engine")
 
 col1, col2, col3 = st.columns(3)
@@ -43,9 +33,7 @@ col1.metric("Market Regime", "Volatile" if regimes[-1] else "Stable")
 col2.metric("Strategy Return (%)", f"{total_return:.2f}%")
 col3.metric("Buy & Hold (%)", f"{buy_hold_return:.2f}%")
 
-# ------------------------
-# PRICE + SIGNALS
-# ------------------------
+
 st.subheader("📈 Price with BUY/SELL Signals")
 
 price_norm = (price - price.mean()) / price.std()
@@ -69,9 +57,7 @@ ax.grid()
 ax.legend()
 st.pyplot(fig)
 
-# ------------------------
-# EQUITY
-# ------------------------
+
 st.subheader("📊 Equity Curve")
 
 fig2, ax2 = plt.subplots()
@@ -79,9 +65,6 @@ ax2.plot(equity, color="green")
 ax2.grid()
 st.pyplot(fig2)
 
-# ------------------------
-# COMPARISON
-# ------------------------
 st.subheader("📊 Strategy vs Buy & Hold")
 
 buy_hold = price / price.iloc[0]
@@ -94,9 +77,7 @@ ax3.grid()
 
 st.pyplot(fig3)
 
-# ------------------------
-# INSIGHT
-# ------------------------
+
 st.subheader("🧠 Insight")
 
 if total_return > 0:
